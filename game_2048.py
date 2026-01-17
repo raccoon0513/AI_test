@@ -5,25 +5,30 @@ import os
 import numpy as np
 
 class g2048():
+
     # TODO : 시드고정 코드. 후에 기존코드 주석 후 주석된거 풀기
     #=============================
-    def __init__(self, seed=42):
-    #def __init__(self, seed=None):
+    #이건 고정 시드
+    # def __init__(self, seed=42):
+    #이건 랜덤 시드
+    def __init__(self, seed=None):
     #=============================
 
         # 시드 설정
         self.rng = np.random.default_rng(seed)
 
+        # ==================================
         # 빈 보드 생성
         self.board = np.zeros((4,4), dtype=int)
-
-        # ==================================
-        # TODO : 테스트형 코드. 후에 삭제할것!
+        # TODO : 테스트형 코드. 사용시 위 코드 주석
         # self.board = np.array([
         #     [0,0,1,0] for i in range(4)
         # ])
         # ==================================
         
+        #처음에 두개 생성하지만, run()을 실행하면서 하나를 더 실행하므로 하나만
+        self.add_new_number() 
+
     #=================
     #게임실행관련
     def add_new_number(self):
@@ -33,7 +38,22 @@ class g2048():
         # 그런데 튜플에서 값을 꺼내기 위해 [0]를 붙임
         isZeros = np.where(flatBoard==0)[0]
         if len(isZeros) > 0:
-            flatBoard[self.rng.choice(isZeros)] = 2
+            flatBoard[self.rng.choice(isZeros)] = self.rng.choice([2,4], p=[0.9, 0.1])
+
+
+    #커맨드 부분
+    def command_w(self):
+        pass
+    def command_a(self):
+        pass
+    def command_s(self):
+        pass
+    def command_d(self):
+        pass
+
+    #시프트 연산
+    def shift(self):
+        pass
 
     #=================
     
@@ -48,14 +68,15 @@ class g2048():
 
     #===================
     def run(self):
-        #보드 초기화
-        self.clear_screen()
+        while(np.any(self.board==0)):
+            #보드 초기화
+            self.clear_screen()
 
-        #값 생성
-        self.add_new_number()
-        
-        #보드 출력
-        self.print_board()
+            #값 생성
+            self.add_new_number()
+            
+            #보드 출력
+            self.print_board()
     #====================
     
 
