@@ -5,22 +5,39 @@ import os
 import numpy as np
 
 class g2048():
+    # TODO : 시드고정 코드. 후에 기존코드 주석 후 주석된거 풀기
+    #=============================
     def __init__(self, seed=42):
-        # 시드고정
-        rng = np.random.default_rng(seed)
+    #def __init__(self, seed=None):
+    #=============================
 
-        self.board = np.array([
-            [0,0,0,0] for i in range(4)
-        ])
-    
+        # 시드 설정
+        self.rng = np.random.default_rng(seed)
+
+        # 빈 보드 생성
+        self.board = np.zeros((4,4), dtype=int)
+
+        # ==================================
+        # TODO : 테스트형 코드. 후에 삭제할것!
+        # self.board = np.array([
+        #     [0,0,1,0] for i in range(4)
+        # ])
+        # ==================================
+        
     #=================
     #게임실행관련
     def add_new_number(self):
-        # self.board.flatten()
-        pass
+        flatBoard = self.board.ravel()
+
+        # 결과값이 튜플인데, ex(1,2) 1차원데이터로 변경함
+        # 그런데 튜플에서 값을 꺼내기 위해 [0]를 붙임
+        isZeros = np.where(flatBoard==0)[0]
+        if len(isZeros) > 0:
+            flatBoard[self.rng.choice(isZeros)] = 2
 
     #=================
     
+    #=================
     #출력관련코드
     def clear_screen(self):
         os.system('cls')
@@ -29,12 +46,17 @@ class g2048():
 
     #=================
 
+    #===================
     def run(self):
+        #보드 초기화
         self.clear_screen()
 
+        #값 생성
+        self.add_new_number()
         
+        #보드 출력
         self.print_board()
-
+    #====================
     
 
 #===================================
@@ -42,6 +64,6 @@ class g2048():
 #===================================
 if __name__ == "__main__":
     g1 = g2048()
-    
+    g1.run()
 
 
