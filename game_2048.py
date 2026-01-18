@@ -33,7 +33,7 @@ class g2048():
     #게임실행관련
     def add_new_number(self):
         flatBoard = self.board.ravel()
-
+        # ravel()함수
         # 결과값이 튜플인데, ex(1,2) 1차원데이터로 변경함
         # 그런데 튜플에서 값을 꺼내기 위해 [0]를 붙임
         isZeros = np.where(flatBoard==0)[0]
@@ -42,6 +42,7 @@ class g2048():
 
 
     #커맨드 부분
+    #TODO : 여기 추가하기
     def command_w(self):
         pass
     def command_a(self):
