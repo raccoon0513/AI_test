@@ -54,7 +54,9 @@ class g2048():
 
     #시프트 연산
     def shift(self):
-        pass
+        for _ in range(4):
+            pass
+
 
     #=================
     
