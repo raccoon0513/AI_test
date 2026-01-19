@@ -54,10 +54,23 @@ class g2048():
 
     #시프트 연산
     def shift(self):
-        for _ in range(4):
-            pass
-
-
+        new_board = []
+        for line in self.board:
+            non_zeros = line[line!=0]
+            new_line = []
+            checked = False
+            for i in range(len(non_zeros)):
+                if(checked):
+                    checked = False
+                    continue
+                elif i+1<len(non_zeros) and non_zeros[i]==non_zeros[i+1]:
+                    new_line.append(non_zeros[i]*2)
+                    checked = True
+                else:
+                    new_line.append(non_zeros[i])
+            new_board.append(new_line + [0] *(4-len(new_line)) )
+        return np.array(new_board)
+                
     #=================
     
     #=================
