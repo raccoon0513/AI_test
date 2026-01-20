@@ -1,5 +1,4 @@
 # TODO : 시작할때 랜덤한 곳에 숫자 두개
-# 4의 확률 10%, 2의 확률 90%
 # 입력 : wasd, r(리셋)
 import os
 import numpy as np
@@ -44,10 +43,11 @@ class g2048():
     #커맨드 부분
     #TODO : 여기 추가하기
     def command_w(self):
-        self.board = self.board.T
-        print(self.board)
+        self.board = np.transpose(self.board)
         self.shift()
-        self.board = self.board.T
+        self.board = np.transpose(self.board)
+        # self.board = self.board.T
+        
     def command_a(self):
         self.shift()
     def command_s(self):
@@ -73,7 +73,6 @@ class g2048():
                     new_line.append(non_zeros[i])
             new_board.append(new_line + [0] *(4-len(new_line)) )
         self.board = np.array(new_board)
-                
     #=================
     
     #=================
@@ -88,9 +87,11 @@ class g2048():
     #===================
     def run(self):
         #while(np.any(self.board==0)):
-        for _ in range(20):
+        for i in range(20):
+            print(f"==========life {i}=========")
             #보드 초기화
-            self.clear_screen()
+            #TODO : 클리어 스크린 재활성화
+            # self.clear_screen()
 
             #=====테스트 로직======
             self.command_w()
@@ -101,6 +102,7 @@ class g2048():
             
             #보드 출력
             self.print_board()
+            print(f"==========life {i} finished =========")
     #====================
     
 

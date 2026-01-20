@@ -11,8 +11,6 @@ board = np.array([
     [2,4,2,2]
     ])
 
-print(board)
-
 def shift():
     new_board = []
     for line in board:
@@ -35,6 +33,9 @@ def shift():
 
     return np.array(new_board)
 
-
-        
-
+print(board)
+print("===============")
+print(shift())
+print("===============")
+board=board.T
+print(board)
