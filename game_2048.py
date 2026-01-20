@@ -44,9 +44,12 @@ class g2048():
     #커맨드 부분
     #TODO : 여기 추가하기
     def command_w(self):
-        pass
+        self.board = self.board.T
+        print(self.board)
+        self.shift()
+        self.board = self.board.T
     def command_a(self):
-        pass
+        self.shift()
     def command_s(self):
         pass
     def command_d(self):
@@ -69,7 +72,7 @@ class g2048():
                 else:
                     new_line.append(non_zeros[i])
             new_board.append(new_line + [0] *(4-len(new_line)) )
-        return np.array(new_board)
+        self.board = np.array(new_board)
                 
     #=================
     
@@ -84,9 +87,14 @@ class g2048():
 
     #===================
     def run(self):
-        while(np.any(self.board==0)):
+        #while(np.any(self.board==0)):
+        for _ in range(20):
             #보드 초기화
             self.clear_screen()
+
+            #=====테스트 로직======
+            self.command_w()
+            #=====================
 
             #값 생성
             self.add_new_number()

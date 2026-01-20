@@ -13,29 +13,27 @@ board = np.array([
 
 print(board)
 
-new_board = []
-for line in board:
+def shift():
+    new_board = []
+    for line in board:
 
-    non_zeros = line[line!=0]
-    new_line = []
-    checked = False
-    for i in range(len(non_zeros)):
-        if(checked):
-            checked = False
-            continue
-        elif i+1<len(non_zeros) and non_zeros[i]==non_zeros[i+1]:
-            new_line.append(non_zeros[i]*2)
-            checked = True
-        else:
-            new_line.append(non_zeros[i])
+        non_zeros = line[line!=0]
+        new_line = []
+        checked = False
+        for i in range(len(non_zeros)):
+            if(checked):
+                checked = False
+                continue
+            elif i+1<len(non_zeros) and non_zeros[i]==non_zeros[i+1]:
+                new_line.append(non_zeros[i]*2)
+                checked = True
+            else:
+                new_line.append(non_zeros[i])
 
-    new_board.append(new_line + [0] *(4-len(new_line)) )
+        new_board.append(new_line + [0] *(4-len(new_line)) )
 
 
-new_board = np.array(new_board)
-print(new_board)
-print(type(board))
-print(type(new_board))
+    return np.array(new_board)
 
 
         
