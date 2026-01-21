@@ -8,9 +8,9 @@ class g2048():
     # TODO : 시드고정 코드. 후에 기존코드 주석 후 주석된거 풀기
     #=============================
     #이건 고정 시드
-    # def __init__(self, seed=42):
+    def __init__(self, seed=42):
     #이건 랜덤 시드
-    def __init__(self, seed=None):
+    # def __init__(self, seed=None):
     #=============================
 
         # 시드 설정
@@ -44,21 +44,34 @@ class g2048():
     #TODO : 여기 추가하기
     def command_w(self):
         self.board = np.transpose(self.board)
-        self.shift()
-        self.board = np.transpose(self.board)
-        # self.board = self.board.T
-        
-    def command_a(self):
-        self.shift()
-    def command_s(self):
-        pass
-    def command_d(self):
-        pass
+        self.board = self.shift(self.board)
+        self.board = np.transpose(self.board).copy()
 
+    def command_a(self):
+        self.board = self.shift(self.board).copy()
+    def command_s(self):
+        self.board = np.flip(np.transpose(self.board), axis=1)
+        self.board = self.shift(self.board)
+        self.board = np.transpose(np.flip(self.board, axis=1)).copy()
+    def command_d(self):
+        self.board = np.flip(self.board, axis=1)
+        self.board = self.shift(self.board)
+        self.board = np.flip(self.board, axis=1).copy()
+
+    def command_input(self):
+        dicision = input("w/a/s/d\n")
+        if(dicision=="w"):
+            self.command_w()
+        elif(dicision=="a"):
+            self.command_a()
+        elif(dicision=="s"):
+            self.command_s()
+        elif(dicision=="d"):
+            self.command_d()  
     #시프트 연산
-    def shift(self):
+    def shift(self, board):
         new_board = []
-        for line in self.board:
+        for line in board:
             non_zeros = line[line!=0]
             new_line = []
             checked = False
@@ -72,7 +85,7 @@ class g2048():
                 else:
                     new_line.append(non_zeros[i])
             new_board.append(new_line + [0] *(4-len(new_line)) )
-        self.board = np.array(new_board)
+        return np.array(new_board)
     #=================
     
     #=================
@@ -86,15 +99,14 @@ class g2048():
 
     #===================
     def run(self):
-        #while(np.any(self.board==0)):
-        for i in range(20):
-            print(f"==========life {i}=========")
+        self.clear_screen()
+        while(np.any(self.board==0)):
             #보드 초기화
             #TODO : 클리어 스크린 재활성화
-            # self.clear_screen()
+            self.clear_screen()
 
             #=====테스트 로직======
-            self.command_w()
+            # self.command_input()
             #=====================
 
             #값 생성
@@ -102,7 +114,6 @@ class g2048():
             
             #보드 출력
             self.print_board()
-            print(f"==========life {i} finished =========")
     #====================
     
 
