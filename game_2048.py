@@ -12,22 +12,19 @@ class g2048():
     #이건 랜덤 시드
     # def __init__(self, seed=None):
     #=============================
-
         # 시드 설정
         self.rng = np.random.default_rng(seed)
 
-        # ==================================
         # 빈 보드 생성
         self.board = np.zeros((4,4), dtype=int)
-        # TODO : 테스트형 코드. 사용시 위 코드 주석
-        # self.board = np.array([
-        #     [0,0,1,0] for i in range(4)
-        # ])
-        # ==================================
         
-        #처음에 두개 생성하지만, run()을 실행하면서 하나를 더 실행하므로 하나만
-        self.add_new_number() 
+        #첫 실행 화면 초기화
+        self.clear_screen()
 
+        #TODO : 초기에 두개 생성하도록 조정할 것
+        for _ in range(2): self.add_new_number() 
+        
+        self.print_board()
     #=================
     #게임실행관련
     def add_new_number(self):
@@ -44,30 +41,37 @@ class g2048():
     #TODO : 여기 추가하기
     def command_w(self):
         self.board = np.transpose(self.board)
-        self.board = self.shift(self.board)
+        self.board, isChanged = self.shift(self.board)
         self.board = np.transpose(self.board).copy()
+        return isChanged
 
     def command_a(self):
-        self.board = self.shift(self.board).copy()
+        self.board, isChanged= self.shift(self.board)
+        return isChanged
     def command_s(self):
         self.board = np.flip(np.transpose(self.board), axis=1)
-        self.board = self.shift(self.board)
+        self.board, isChanged = self.shift(self.board)
         self.board = np.transpose(np.flip(self.board, axis=1)).copy()
+        return isChanged
     def command_d(self):
         self.board = np.flip(self.board, axis=1)
-        self.board = self.shift(self.board)
+        self.board, isChanged = self.shift(self.board)
         self.board = np.flip(self.board, axis=1).copy()
+        return isChanged
 
+    #테스트용 임시 로직
     def command_input(self):
         dicision = input("w/a/s/d\n")
+        isChanged = False
         if(dicision=="w"):
-            self.command_w()
+            isChanged = self.command_w()
         elif(dicision=="a"):
-            self.command_a()
+            isChanged = self.command_a()
         elif(dicision=="s"):
-            self.command_s()
+            isChanged = self.command_s()
         elif(dicision=="d"):
-            self.command_d()  
+            isChanged = self.command_d()  
+        return isChanged
     #시프트 연산
     def shift(self, board):
         new_board = []
@@ -84,8 +88,10 @@ class g2048():
                     checked = True
                 else:
                     new_line.append(non_zeros[i])
-            new_board.append(new_line + [0] *(4-len(new_line)) )
-        return np.array(new_board)
+            new_board.append(new_line + [0] *(4-len(new_line)) ) 
+        
+        return np.array(new_board), False if np.array_equal(new_board, board) else True
+
     #=================
     
     #=================
@@ -99,21 +105,24 @@ class g2048():
 
     #===================
     def run(self):
-        self.clear_screen()
         while(np.any(self.board==0)):
+
+            #=====테스트 로직======
+            if not self.command_input() :
+                continue
+            #=====================
+
             #보드 초기화
             #TODO : 클리어 스크린 재활성화
             self.clear_screen()
-
-            #=====테스트 로직======
-            # self.command_input()
-            #=====================
 
             #값 생성
             self.add_new_number()
             
             #보드 출력
             self.print_board()
+
+            
     #====================
     
 
