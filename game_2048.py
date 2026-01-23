@@ -36,9 +36,12 @@ class g2048():
         if len(isZeros) > 0:
             flatBoard[self.rng.choice(isZeros)] = self.rng.choice([2,4], p=[0.9, 0.1])
 
-
     #커맨드 부분
     #TODO : 여기 추가하기
+
+    #게임 오버 체크. 바뀌었는가?
+    def game_over_check(self, w=True, a=True, s=True, d=True):
+        pass
     def command_w(self):
         self.board = np.transpose(self.board)
         self.board, isChanged = self.shift(self.board)
@@ -62,16 +65,21 @@ class g2048():
     #테스트용 임시 로직
     def command_input(self):
         dicision = input("w/a/s/d\n")
-        isChanged = False
+        isNotChanged = True
+        axis = ["w","a","s","d"].index(dicision)
         if(dicision=="w"):
-            isChanged = self.command_w()
+            isNotChanged = self.command_w()
+            axis = 0
         elif(dicision=="a"):
-            isChanged = self.command_a()
+            isNotChanged = self.command_a()
+            axis = 1
         elif(dicision=="s"):
-            isChanged = self.command_s()
+            isNotChanged = self.command_s()
+            axis = 2
         elif(dicision=="d"):
-            isChanged = self.command_d()  
-        return isChanged
+            isNotChanged = self.command_d()  
+            axis = 3
+        return isNotChanged
     #시프트 연산
     def shift(self, board):
         new_board = []
@@ -90,7 +98,8 @@ class g2048():
                     new_line.append(non_zeros[i])
             new_board.append(new_line + [0] *(4-len(new_line)) ) 
         
-        return np.array(new_board), False if np.array_equal(new_board, board) else True
+        #안바뀌었으면 True, 바뀌었으면 False
+        return np.array(new_board), True if np.array_equal(new_board, board) else False
 
     #=================
     
@@ -108,7 +117,7 @@ class g2048():
         while(np.any(self.board==0)):
 
             #=====테스트 로직======
-            if not self.command_input() :
+            if self.command_input():
                 continue
             #=====================
 
