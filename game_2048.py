@@ -42,6 +42,7 @@ class g2048():
     #게임 오버 체크. 바뀌었는가?
     def game_over_check(self, w=True, a=True, s=True, d=True):
         pass
+    #TODO : 이부분도 리펙토링?
     def command_w(self):
         self.board = np.transpose(self.board)
         self.board, isChanged = self.shift(self.board)
@@ -64,22 +65,29 @@ class g2048():
 
     #테스트용 임시 로직
     def command_input(self):
+        direction_checker = [
+            False, False, False, False
+        ]
         dicision = input("w/a/s/d\n")
         isNotChanged = True
         axis = ["w","a","s","d"].index(dicision)
-        if(dicision=="w"):
-            isNotChanged = self.command_w()
-            axis = 0
-        elif(dicision=="a"):
-            isNotChanged = self.command_a()
-            axis = 1
-        elif(dicision=="s"):
-            isNotChanged = self.command_s()
-            axis = 2
-        elif(dicision=="d"):
-            isNotChanged = self.command_d()  
-            axis = 3
-        return isNotChanged
+        #TODO : 이부분 리펙토링 가능할듯
+        direction_funcions = [
+            self.command_w,
+            self.command_a,
+            self.command_s,
+            self.command_d
+        ]
+        isNotChanged = direction_funcions[axis]()
+        if isNotChanged:
+            for axis, condition in enumerate(direction_checker):
+                if(not condition) :
+                    direction_checker[axis] = direction_funcions[axis]()
+                    if not direction_checker[axis]:
+                        break
+        if all(direction_checker):
+            pass
+                
     #시프트 연산
     def shift(self, board):
         new_board = []
@@ -117,8 +125,7 @@ class g2048():
         while(np.any(self.board==0)):
 
             #=====테스트 로직======
-            if self.command_input():
-                continue
+            self.command_input()
             #=====================
 
             #보드 초기화
