@@ -18,6 +18,9 @@ class g2048():
         # 빈 보드 생성
         self.board = np.zeros((4,4), dtype=int)
         
+        # 스코어 설정
+        self.score = 0
+
         #첫 실행 화면 초기화
         self.clear_screen()
 
@@ -92,19 +95,23 @@ class g2048():
         for line in board:
             non_zeros = line[line!=0]
             new_line = []
-            checked = False
+            checked = False #이전 검사때 합쳐졌으면 스킵할지 정하는 플래그
+            turn_score = 0 #이번 턴에 획득한 점수
             for i in range(len(non_zeros)):
                 if(checked):
                     checked = False
                     continue
                 elif i+1<len(non_zeros) and non_zeros[i]==non_zeros[i+1]:
-                    new_line.append(non_zeros[i]*2)
+                    merged_val = non_zeros[i] * 2
+                    new_line.append(merged_val)
+                    turn_score += merged_val # 합쳐진 값을 점수로 추가
                     checked = True
                 else:
                     new_line.append(non_zeros[i])
             new_board.append(new_line + [0] *(4-len(new_line)) ) 
         
         #안바뀌었으면 True, 바뀌었으면 False
+        self.score += turn_score
         return np.array(new_board), True if np.array_equal(new_board, board) else False
 
     def isGameOver(self):
@@ -126,8 +133,16 @@ class g2048():
         os.system('cls')
     def print_board(self):
         print(self.board)
+        print(f"현재 스코어 : {self.score}점")
 
     #=================
+    
+    #딥러닝용 값 로그화 함수
+    def get_state(self):
+        """보드 데이터를 log2로 변환하여 0~11 정도의 정수 범위로 압축합니다."""
+        # 0인 값은 0으로 유지하고, 나머지 값만 log2 처리
+        return np.where(self.board > 0, np.log2(self.board), 0).astype(int)
+    #========================
 
     #===================
     def run(self):
@@ -137,6 +152,7 @@ class g2048():
             # 0 : 정상처리
             # -1 : 게임 오버
             state = self.command_input(self.rng.choice(["w", "a", "s", "d"]))
+            # state = self.command_input()
             if state==1:
                 print("can not move")
                 continue
@@ -147,15 +163,20 @@ class g2048():
                 break
             #=====================
 
-            #보드 초기화
-            #TODO : 클리어 스크린 재활성화
-            self.clear_screen()
+            
 
             #값 생성
-            self.add_new_number()
+            if(state == 0):
+                self.add_new_number()
+
+
+            #=====학습시엔 가릴것==============
+            #보드 초기화
+            self.clear_screen()
             
             #보드 출력
             self.print_board()
+            #=======================
 
             
     #====================
