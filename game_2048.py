@@ -8,9 +8,9 @@ class g2048():
     # TODO : 시드고정 코드. 후에 기존코드 주석 후 주석된거 풀기
     #=============================
     #이건 고정 시드
-    def __init__(self, seed=42):
+    # def __init__(self, seed=42):
     #이건 랜덤 시드
-    # def __init__(self, seed=None):
+    def __init__(self, seed=None):
     #=============================
         # 시드 설정
         self.rng = np.random.default_rng(seed)
