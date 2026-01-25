@@ -38,10 +38,6 @@ class g2048():
 
     #커맨드 부분
     #TODO : 여기 추가하기
-
-    #게임 오버 체크. 바뀌었는가?
-    def game_over_check(self, w=True, a=True, s=True, d=True):
-        pass
     #TODO : 이부분도 리펙토링?
     def command_w(self):
         self.board = np.transpose(self.board)
@@ -64,14 +60,14 @@ class g2048():
         return isChanged
 
     #테스트용 임시 로직
-    def command_input(self):
-        direction_checker = [
-            False, False, False, False
-        ]
+
+    def command_input_test(self):
         dicision = input("w/a/s/d\n")
+        self.command_input(dicision)
+    def command_input(self, dicision):
+        
         isNotChanged = True
         axis = ["w","a","s","d"].index(dicision)
-        #TODO : 이부분 리펙토링 가능할듯
         direction_funcions = [
             self.command_w,
             self.command_a,
@@ -80,13 +76,15 @@ class g2048():
         ]
         isNotChanged = direction_funcions[axis]()
         if isNotChanged:
-            for axis, condition in enumerate(direction_checker):
-                if(not condition) :
-                    direction_checker[axis] = direction_funcions[axis]()
-                    if not direction_checker[axis]:
-                        break
-        if all(direction_checker):
-            pass
+            
+            #-1 : 전방위 이동 불가(게임 오버)
+            if self.isGameOver() : return -1
+
+            # 1 : 해당 방향 처리 불가(이동 불가)    
+            return 1
+        
+        # 0 : 정상
+        return 0
                 
     #시프트 연산
     def shift(self, board):
@@ -109,6 +107,17 @@ class g2048():
         #안바뀌었으면 True, 바뀌었으면 False
         return np.array(new_board), True if np.array_equal(new_board, board) else False
 
+    def isGameOver(self):
+        # 빈칸 있는지 체크
+        if np.any(self.board == 0):
+            return False
+        
+        #길이 3인 배열 만들어서 비교(하나라도 같으면 참 반환)
+        if np.any(self.board[:, :-1] == self.board[:, 1:]) or np.any(self.board[:-1, :] == self.board[1:, :]):
+            return False   
+            
+        # 전부 참일시 게임오버
+        return True
     #=================
     
     #=================
@@ -122,10 +131,20 @@ class g2048():
 
     #===================
     def run(self):
-        while(np.any(self.board==0)):
-
+        while True:
             #=====테스트 로직======
-            self.command_input()
+            # 1 : 처리 불가
+            # 0 : 정상처리
+            # -1 : 게임 오버
+            state = self.command_input(self.rng.choice(["w", "a", "s", "d"]))
+            if state==1:
+                print("can not move")
+                continue
+            elif state==-1:
+                self.clear_screen()
+                self.print_board()
+                print("game over")
+                break
             #=====================
 
             #보드 초기화
