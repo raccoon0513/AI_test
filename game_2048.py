@@ -140,8 +140,9 @@ class g2048():
     #딥러닝용 값 로그화 함수
     def get_state(self):
         """보드 데이터를 log2로 변환하여 0~11 정도의 정수 범위로 압축합니다."""
+        temp_board = np.where(self.board > 0, self.board, 1)
         # 0인 값은 0으로 유지하고, 나머지 값만 log2 처리
-        return np.where(self.board > 0, np.log2(self.board), 0).astype(int)
+        return np.log2(temp_board).astype(int)
     #========================
 
     #===================
@@ -171,11 +172,11 @@ class g2048():
 
 
             #=====학습시엔 가릴것==============
-            #보드 초기화
-            self.clear_screen()
+            # #보드 초기화
+            # self.clear_screen()
             
-            #보드 출력
-            self.print_board()
+            # #보드 출력
+            # self.print_board()
             #=======================
 
             

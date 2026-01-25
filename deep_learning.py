@@ -61,7 +61,7 @@ class DQNAgent:
 
     def train(self):
         if len(self.memory) < self.batch_size:
-            return
+            return 0
 
         # 메모리에서 데이터 추출
         states, actions, rewards, next_states, dones = self.memory.sample(self.batch_size)
@@ -89,3 +89,5 @@ class DQNAgent:
         # 탐험 확률 감소
         if self.epsilon > self.epsilon_min:
             self.epsilon *= self.epsilon_decay
+
+        return loss.item() # 계산된 오차(Loss) 값을 반환
