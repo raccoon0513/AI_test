@@ -151,8 +151,8 @@ class g2048():
             # 1 : 처리 불가
             # 0 : 정상처리
             # -1 : 게임 오버
-            state = self.command_input(self.rng.choice(["w", "a", "s", "d"]))
-            # state = self.command_input()
+            state, reward = self.command_input(self.rng.choice(["w", "a", "s", "d"]))
+            # state, reward = self.command_input()
             if state==1:
                 print("can not move")
                 continue
