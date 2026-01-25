@@ -44,23 +44,23 @@ class g2048():
     #TODO : 이부분도 리펙토링?
     def command_w(self):
         self.board = np.transpose(self.board)
-        self.board, isChanged = self.shift(self.board)
+        self.board, isChanged, turn_score = self.shift(self.board)
         self.board = np.transpose(self.board).copy()
-        return isChanged
+        return isChanged, turn_score
 
     def command_a(self):
-        self.board, isChanged= self.shift(self.board)
-        return isChanged
+        self.board, isChanged, turn_score= self.shift(self.board)
+        return isChanged, turn_score
     def command_s(self):
         self.board = np.flip(np.transpose(self.board), axis=1)
-        self.board, isChanged = self.shift(self.board)
+        self.board, isChanged, turn_score = self.shift(self.board)
         self.board = np.transpose(np.flip(self.board, axis=1)).copy()
-        return isChanged
+        return isChanged, turn_score
     def command_d(self):
         self.board = np.flip(self.board, axis=1)
-        self.board, isChanged = self.shift(self.board)
+        self.board, isChanged, turn_score = self.shift(self.board)
         self.board = np.flip(self.board, axis=1).copy()
-        return isChanged
+        return isChanged, turn_score
 
     #테스트용 임시 로직
 
@@ -77,26 +77,26 @@ class g2048():
             self.command_s,
             self.command_d
         ]
-        isNotChanged = direction_funcions[axis]()
+        isNotChanged, turn_score = direction_funcions[axis]()
         if isNotChanged:
             
             #-1 : 전방위 이동 불가(게임 오버)
-            if self.isGameOver() : return -1
+            if self.isGameOver() : return -1, -20
 
             # 1 : 해당 방향 처리 불가(이동 불가)    
-            return 1
+            return 1, -2
         
         # 0 : 정상
-        return 0
+        return 0, turn_score
                 
     #시프트 연산
     def shift(self, board):
         new_board = []
+        turn_score = 0 #이번 턴에 획득한 점수
         for line in board:
             non_zeros = line[line!=0]
             new_line = []
             checked = False #이전 검사때 합쳐졌으면 스킵할지 정하는 플래그
-            turn_score = 0 #이번 턴에 획득한 점수
             for i in range(len(non_zeros)):
                 if(checked):
                     checked = False
@@ -110,9 +110,9 @@ class g2048():
                     new_line.append(non_zeros[i])
             new_board.append(new_line + [0] *(4-len(new_line)) ) 
         
-        #안바뀌었으면 True, 바뀌었으면 False
         self.score += turn_score
-        return np.array(new_board), True if np.array_equal(new_board, board) else False
+        #안바뀌었으면 True, 바뀌었으면 False
+        return np.array(new_board), True if np.array_equal(new_board, board) else False, turn_score
 
     def isGameOver(self):
         # 빈칸 있는지 체크
