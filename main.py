@@ -7,7 +7,7 @@ if __name__ == "__main__":
     env = game_2048.g2048(seed=None)
     agent = DQNAgent()
 
-    model_path = "best_model_2048.pth"
+    model_path = "model_2048.pth"
 
     # 파일이 존재하는지 확인 후 불러오기
     if os.path.exists(model_path):
