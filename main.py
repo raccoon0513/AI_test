@@ -8,6 +8,7 @@ if __name__ == "__main__":
     agent = DQNAgent()
 
     model_path = "model_2048.pth"
+    generation_path = "config.json"
     ep = 0 # 세대 번호를 예외 처리 구문에서도 접근할 수 있도록 루프 밖에서 초기화
 
     # 모델 불러오기 로직
@@ -54,3 +55,4 @@ if __name__ == "__main__":
         # 중단되더라도 현재까지의 가중치를 파일로 저장
         torch.save(agent.model.state_dict(), model_path)
         print(f"현재 세대({ep + 1})까지의 모델이 {model_path}에 저장되었습니다.")
+        
